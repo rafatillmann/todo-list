@@ -49,8 +49,13 @@ public class TaskController {
 	@PutMapping("/{id}")
 	public ResponseEntity update(@RequestBody TaskModel taskModel, @PathVariable UUID id, HttpServletRequest request){
 		var previousTask = this.taskRepository.findById(id).orElseThrow();
-		Utils.copyNonNullProperties(taskModel, previousTask);
 
+		var idUser = request.getAttribute("idUser");
+		if(!previousTask.getIdUser().equals(idUser)){
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User doesn't have permission to update this task");
+		}
+
+		Utils.copyNonNullProperties(taskModel, previousTask);
 		var task = this.taskRepository.save(previousTask);
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(task);
 	}
