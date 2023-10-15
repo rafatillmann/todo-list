@@ -22,7 +22,7 @@ public class UserController {
 	public ResponseEntity create(@RequestBody UserModel userModel){
 		var user = this.userRepository.findByUsername(userModel.getUsername());
 		if(user != null){
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid username");
 		}
 
 		var passwordHash = BCrypt.withDefaults().hashToString(12, userModel.getPassword().toCharArray());
